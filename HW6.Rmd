@@ -1,0 +1,37 @@
+---
+title: "HW6"
+output: html_document
+date: "2023-11-22"
+---
+
+```{r}
+library(fpp)
+library(fpp2)
+library(forecast)
+library(readxl)
+airtraffic <- read_excel("/Users/jasperyeh/Downloads/Air_Traffic_Passenger_Statistics.xlsx")
+
+airtraffictimeseries <- ts(airtraffic)
+plot(airtraffictimeseries)
+ndiffs(airtraffictimeseries)
+tsdisplay(airtraffictimeseries)
+airtraffictimeseriesdiff1 <- diff(airtraffictimeseries, differences=1)
+plot(airtraffictimeseriesdiff1)
+tsdisplay(airtraffictimeseriesdiff1)
+univariate_data <- airtraffic$`Passenger Count`
+auto_fit <- auto.arima(univariate_data, trace=TRUE, stepwise = FALSE)
+auto_fit
+attributes(auto_fit)
+plot(forecast(auto_fit,h=5,level=c(99.5)))
+
+Acf(auto_fit$residuals)
+Box.test(residuals(auto_fit), lag=20, type="Ljung")
+plot.ts(residuals(auto_fit))
+hist(auto_fit$residuals)
+tsdiag(auto_fit)
+accuracy(auto_fit)
+
+# The graph is not stationary, with a huge dip in 2020. But we are seeing growth after the dip and we are expecting the numbers to continue to rise gradually until it returns to pre covid levels. The accuracy of the forecast does not seem to be high as the RMSE and MAE numbers a fairly high.
+```
+
+## R Markdown
